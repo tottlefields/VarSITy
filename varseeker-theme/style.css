@@ -1,13 +1,13 @@
 /**
- * Theme Name: VarSeeker
+ * Theme Name: Escapade
  * Theme URI: https://github.com/godaddy/wp-escapade-theme
  * Author: GoDaddy
  * Author URI: https://www.godaddy.com/
  * Description: Escapade is a Primer child theme with a unique sidebar navigation.
- * Version: 1.1.2
+ * Version: 1.1.5
  * License: GPL-2.0
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: varseeker
+ * Text Domain: escapade
  * Template: primer
  * Tags: custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, left-sidebar, one-column, right-sidebar, rtl-language-support, sticky-post, threaded-comments, three-columns, translation-ready, two-columns
  *
@@ -17,4 +17,17 @@
  * Copyright © 2016 GoDaddy Operating Company, LLC. All Rights Reserved.
  */
  
+@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");
+@import url("https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css");
 @import url("escapade.css");
+
+.analysisList {  max-height: 250px; overflow-y: auto; }
+.analysisList li { padding: .25rem .75rem; }
+
+.badge-pill { font-family: "Oswald"; text-transform: uppercase; }
+
+.table-hover tbody tr.selected { color: #212529; background-color: rgba(0,0,0,.075); }
+
+body.dragging, body.dragging * { cursor: move !important; }
+.dragged { position: absolute; opacity: 0.5; z-index: 2000; }
