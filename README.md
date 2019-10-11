@@ -1,1 +1,1 @@
-# VarSeeker
+# VarSITY - Variant Search and Interogation Tool
