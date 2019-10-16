@@ -25,15 +25,15 @@
         	reference: {
         		id: "canfam3",
 				name: "CanFam 3.1",
-				fastaURL: "/data/canfam3.fasta",
-				indexURL: "/data/canfam3.fasta.fai",
-				aliasURL: "/data/canfam3.alias",
+				fastaURL: "/data/Genomes/canfam3/canfam3.fasta",
+				indexURL: "/data/Genomes/canfam3/canfam3.fasta.fai",
+				aliasURL: "/data/Genomes/canfam3/canfam3.alias",
 				tracks: [
 					{
 						type: "annotation",
 						format: "bed",
 						name: "Ensembl Genes",
-						url: "/data/Canis_familiaris.CanFam3.1.96.bed"
+						url: "/data/Genomes/canfam3/Canis_familiaris.CanFam3.1.96.bed"
 					}
 				]
 			},
@@ -42,7 +42,7 @@
         		{
         			type: "variant",
         			format: "vcf",
-        			url: "/data/varsity.vcf",
+        			url: "/data/Samples/varsity.vcf",
         			name: "Variants",
         			displayMode: "COLLAPSED",
         			height: 50
@@ -54,10 +54,10 @@
         			alignmentRowHeight: 5,
         			height: 150,
         			autoHeight: false,
-        			//url: "ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR190/ERR1904271/BU002.cleaned.dedup.bam",
-        			//indexURL: "ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR190/ERR1904271/BU002.cleaned.dedup.bam.bai",
-        			url: "/data/BoT_33834/BoT_33834.bam",
-        			indexURL: "/data/BoT_33834/BoT_33834.bai",
+        			url: "https://f002.backblazeb2.com/file/aht-varsity/KE_34857_chr20.bam ",
+        			indexURL: "https://f002.backblazeb2.com/file/aht-varsity/KE_34857_chr20.bam.bai",
+        			//url: "/data/Samples/BoT_33834/BoT_33834.bam",
+        			//indexURL: "/data/Samples/BoT_33834/BoT_33834.bai",
         		}, 
         	]
         };

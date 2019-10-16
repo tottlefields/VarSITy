@@ -15,7 +15,7 @@ define( 'PRIMER_CHILD_VERSION', '1.1.2' );
  * @action template_redirect
  * @since  1.0.0
  */
-function varseeker_move_elements() {
+function varsity_move_elements() {
 
 	remove_action( 'primer_header',                 'primer_add_hero',              7 );
 	remove_action( 'primer_after_header',           'primer_add_page_title',        12 );
@@ -31,7 +31,7 @@ function varseeker_move_elements() {
 	}
 
 }
-add_action( 'template_redirect', 'varseeker_move_elements' );
+add_action( 'template_redirect', 'varsity_move_elements' );
 
 /**
  * Add mobile menu to header.
@@ -39,12 +39,12 @@ add_action( 'template_redirect', 'varseeker_move_elements' );
  * @action primer_header
  * @since  1.0.0
  */
-function varseeker_add_mobile_menu() {
+function varsity_add_mobile_menu() {
 
 	get_template_part( 'templates/parts/mobile-menu' );
 
 }
-add_action( 'primer_header', 'varseeker_add_mobile_menu', 0 );
+add_action( 'primer_header', 'varsity_add_mobile_menu', 0 );
 
 /**
  * Add social links to primary navigation area.
@@ -52,7 +52,7 @@ add_action( 'primer_header', 'varseeker_add_mobile_menu', 0 );
  * @action primer_after_header
  * @since  1.0.0
  */
-function varseeker_add_social_menu() {
+function varsity_add_social_menu() {
 
 	if ( has_nav_menu( 'social' ) ) {
 
@@ -61,7 +61,7 @@ function varseeker_add_social_menu() {
 	}
 
 }
-add_action( 'primer_after_header', 'varseeker_add_social_menu', 30 );
+add_action( 'primer_after_header', 'varsity_add_social_menu', 30 );
 
 /**
  * Set custom logo args.
@@ -73,7 +73,7 @@ add_action( 'primer_after_header', 'varseeker_add_social_menu', 30 );
  *
  * @return array
  */
-function varseeker_custom_logo_args( $args ) {
+function varsity_custom_logo_args( $args ) {
 
 	$args['width']  = 180;
 	$args['height'] = 80;
@@ -81,7 +81,7 @@ function varseeker_custom_logo_args( $args ) {
 	return $args;
 
 }
-add_filter( 'primer_custom_logo_args', 'varseeker_custom_logo_args' );
+add_filter( 'primer_custom_logo_args', 'varsity_custom_logo_args' );
 
 /**
  * Set layouts.
@@ -93,7 +93,7 @@ add_filter( 'primer_custom_logo_args', 'varseeker_custom_logo_args' );
  *
  * @return array
  */
-function varseeker_layouts( $layouts ) {
+function varsity_layouts( $layouts ) {
 
 	unset(
 		$layouts['three-column-default'],
@@ -104,8 +104,15 @@ function varseeker_layouts( $layouts ) {
 	return $layouts;
 
 }
-add_filter( 'primer_layouts', 'varseeker_layouts' );
+add_filter( 'primer_layouts', 'varsity_layouts' );
 add_filter( 'primer_page_widths', '__return_empty_array' );
+
+function varsity_default_layout(  ) {
+
+	return 'one-column-wide';
+
+}
+add_filter( 'primer_default_layout', 'varsity_default_layout' );
 
 /**
  * Set fonts.
@@ -117,7 +124,7 @@ add_filter( 'primer_page_widths', '__return_empty_array' );
  *
  * @return array
  */
-function varseeker_fonts( $fonts ) {
+function varsity_fonts( $fonts ) {
 
 	$fonts[] = 'Droid Serif';
 	$fonts[] = 'Oswald';
@@ -125,7 +132,7 @@ function varseeker_fonts( $fonts ) {
 	return $fonts;
 
 }
-add_filter( 'primer_fonts', 'varseeker_fonts' );
+add_filter( 'primer_fonts', 'varsity_fonts' );
 
 /**
  * Set font types.
@@ -137,7 +144,7 @@ add_filter( 'primer_fonts', 'varseeker_fonts' );
  *
  * @return array
  */
-function varseeker_font_types( $font_types ) {
+function varsity_font_types( $font_types ) {
 
 	$overrides = array(
 		'site_title_font' => array(
@@ -160,7 +167,7 @@ function varseeker_font_types( $font_types ) {
 	return primer_array_replace_recursive( $font_types, $overrides );
 
 }
-add_filter( 'primer_font_types', 'varseeker_font_types' );
+add_filter( 'primer_font_types', 'varsity_font_types' );
 
 /**
  * Set colors.
@@ -172,7 +179,7 @@ add_filter( 'primer_font_types', 'varseeker_font_types' );
  *
  * @return array
  */
-function varseeker_colors( $colors ) {
+function varsity_colors( $colors ) {
 
 	unset(
 		$colors['content_background_color'],
@@ -278,7 +285,7 @@ function varseeker_colors( $colors ) {
 	return primer_array_replace_recursive( $colors, $overrides );
 
 }
-add_filter( 'primer_colors', 'varseeker_colors' );
+add_filter( 'primer_colors', 'varsity_colors' );
 
 /**
  * Set color schemes.
@@ -290,7 +297,7 @@ add_filter( 'primer_colors', 'varseeker_colors' );
  *
  * @return array
  */
-function varseeker_color_schemes( $color_schemes ) {
+function varsity_color_schemes( $color_schemes ) {
 
 	unset( $color_schemes['iguana'] );
 
@@ -389,4 +396,4 @@ function varseeker_color_schemes( $color_schemes ) {
 	return primer_array_replace_recursive( $color_schemes, $overrides );
 
 }
-add_filter( 'primer_color_schemes', 'varseeker_color_schemes' );
+add_filter( 'primer_color_schemes', 'varsity_color_schemes' );
