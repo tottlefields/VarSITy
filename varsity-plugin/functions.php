@@ -5,9 +5,9 @@
 * Version: 0.0.2
 * Author: Ellen Schofield
 *
-* Text Domain: varseeker
+* Text Domain: varsity
 *
-* @package VarSeeker Plugin
+* @package varsity Plugin
 * @category Core
 * @author Ellen Schofield
 */
@@ -17,11 +17,11 @@ require_once 'posttypes.php';
 //require_once 'shortcodes.php';
 //require_once 'custom-metaboxes.php';
 
-add_action( 'wp_enqueue_scripts', 'varseeker_enqueue_scripts' );
+add_action( 'wp_enqueue_scripts', 'varsity_enqueue_scripts' );
 add_action( 'admin_init', 'fontawesome_dashboard' );
 
 
-function varseeker_enqueue_scripts() {
+function varsity_enqueue_scripts() {
 	
 	//Bootstrap
 	wp_register_script ( 'bootstrap-js', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js', '', '4.3.1', true);
