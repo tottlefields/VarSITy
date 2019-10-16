@@ -1,5 +1,7 @@
 <?php
 
+require 'child-overides.php';
+
 /**
  * Child theme version.
  *
