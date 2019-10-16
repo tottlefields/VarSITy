@@ -4,7 +4,7 @@
  * Author: GoDaddy
  * Author URI: https://www.godaddy.com/
  * Description: Escapade is a Primer child theme with a unique sidebar navigation.
- * Version: 1.1.5
+ * Version: 1.1.6
  * License: GPL-2.0
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: varsity
@@ -31,3 +31,21 @@
 
 body.dragging, body.dragging * { cursor: move !important; }
 .dragged { position: absolute; opacity: 0.5; z-index: 2000; }
+
+
+.blog .site-header, .page .site-header, .archive .site-header, .single .site-header { padding: 40px 0; }
+
+#igvBrowser input { padding: 1px 8px; }
+
+.row{ max-width:none; }
+
+.main-navigation li.current_page_item, .main-navigation li.current_page_item a { background-color: #5d5179; color: white !important; }
+
+a:hover { text-decoration: none; }
+ul.nav-tabs{ margin-left:0; }
+.igv-popover-td{ line-height:100%; padding:0.2rem; }
+
+/* Datatables */
+.dataTables_paginate{ float:right; }
+.form-control-sm { padding: .25rem .5rem !important; }
+.dataTables_filter label { width:100%; }
