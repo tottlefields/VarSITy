@@ -217,7 +217,7 @@ function varsity_colors( $colors ) {
 			),
 		),
 		'heading_text_color' => array(
-			'default' => '#FFFFFF',
+			'default' => '#353535',
 		),
 		'primary_text_color' => array(
 			'default' => '#252525',
