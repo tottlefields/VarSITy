@@ -239,7 +239,7 @@ function varsity_colors( $colors ) {
 		 * Link / Button colors
 		 */
 		'link_color' => array(
-			'default'  => '#55b74e',
+			'default'  => '#5d5179',
 			'css'      => array(
 				'.main-navigation ul li:hover, .main-navigation li.current-menu-item, .main-navigation ul li.current-menu-item > a:hover, .main-navigation ul li.current-menu-item > a:visited:hover, .woocommerce-cart-menu-item .woocommerce.widget_shopping_cart p.buttons a:hover' => array(
 					'background-color' => '%1$s',
@@ -247,7 +247,7 @@ function varsity_colors( $colors ) {
 			),
 		),
 		'button_color' => array(
-			'default' => '#55b74e',
+			'default' => '#5d5179',
 		),
 		'button_text_color' => array(
 			'default'  => '#ffffff',
