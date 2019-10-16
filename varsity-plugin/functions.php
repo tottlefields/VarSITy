@@ -1,8 +1,8 @@
 <?php
 /**
-* Plugin Name: VarSeeker Plugin
+* Plugin Name: VarSITy Plugin
 * Description: Variant Search and Interogation Tool 
-* Version: 0.0.1
+* Version: 0.0.2
 * Author: Ellen Schofield
 *
 * Text Domain: varseeker
@@ -38,7 +38,7 @@ function varseeker_enqueue_scripts() {
 	wp_register_script ( 'js-tree', 'https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js', array ('jquery'), '3.3.8', false);
 		
 	//IGV JS
-	wp_register_script ( 'igv-js', 'https://igv.org/web/current/dist/igv.min.js', '', '2.2.10', false);
+	wp_register_script ( 'igv-js', 'https://cdn.jsdelivr.net/npm/igv@2.3.0/dist/igv.min.js', '', '2.3.0', false);
 	
 	
 	wp_enqueue_script ( 'bootstrap-js' );
