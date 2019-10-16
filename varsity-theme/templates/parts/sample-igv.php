@@ -33,7 +33,7 @@
 						type: "annotation",
 						format: "bed",
 						name: "Ensembl Genes",
-						url: "/data/Genomes/canfam3/Canis_familiaris.CanFam3.1.96.bed"
+						url: "/data/Genomes/canfam3/Canis_familiaris.CanFam3.1.98.bed"
 					}
 				]
 			},
