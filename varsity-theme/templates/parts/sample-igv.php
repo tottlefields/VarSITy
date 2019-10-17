@@ -64,7 +64,7 @@ $index_url = get_post_meta(get_the_ID(), 'index_url', true);
 if (isset($data_url) && $data_url != ''){ ?>
         		{
         			type: "alignment",
-        			format: "bam",
+        			format: "cram",
         			name: "<?php echo the_title(); ?>",
         			alignmentRowHeight: 5,
         			height: 150,
@@ -77,7 +77,8 @@ if (isset($data_url) && $data_url != ''){ ?>
         };
 
         igv.createBrowser(igvDiv, options).then(function (browser) {
-        		console.log("Created IGV browser");
+        	igv.browser = browser;
+        	//console.log("Created IGV browser");
         })
     });
 

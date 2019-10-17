@@ -41,17 +41,8 @@
 	<?php get_template_part( 'templates/parts/sample', 'igv' ); ?>
 	<?php get_template_part( 'templates/parts/sample', 'analysis' ); ?>
 
-	<?php get_template_part( 'templates/parts/loop/post', 'content' ); ?>	
-
-	<?php
-
-	/**
-	 * Fires inside the `article` element, after the content.
-	 *
-	 * @since 1.0.0
-	 */
-	//do_action( 'primer_after_post_content' );
-
-	?>
+	<?php //get_template_part( 'templates/parts/loop/post', 'content' ); ?>
+	
+	<a href="javascript:igv.browser.search('3:40808242')">chr3:40808242</a>
 
 </article><!-- #post-## -->
