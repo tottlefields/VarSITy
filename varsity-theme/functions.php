@@ -399,3 +399,12 @@ function varsity_color_schemes( $color_schemes ) {
 
 }
 add_filter( 'primer_color_schemes', 'varsity_color_schemes' );
+
+
+function debug_array($array){
+    echo '<pre>';
+    print_r($array);
+    echo '</pre>';
+}
+
+?>

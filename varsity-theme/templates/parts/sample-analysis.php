@@ -11,7 +11,7 @@
 ?>
 
 <div class="row">
-	<div class="col-4"><h3>Sample Analyses</h3>
+	<div class="col"><h3>Sample Analyses</h3>
 		<table id="analysisTable" class="table table-sm table-hover" style="font-size:0.8rem;">
 		<thead><tr><th>Started</th><th>Researcher</th><th class="text-center">Cases</th><th class="text-center">Controls</th><th class="text-center">Status</th></tr></thead>
 		<tbody>

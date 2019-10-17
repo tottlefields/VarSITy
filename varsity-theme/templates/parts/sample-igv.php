@@ -10,6 +10,18 @@
  
 ?>
 
+<?php 
+
+$sample_meta = get_post_meta(get_the_ID());
+//debug_array($sample_meta);
+
+$data_url = get_post_meta(get_the_ID(), 'data_url', true);
+$index_url = get_post_meta(get_the_ID(), 'index_url', true);
+
+
+
+?>
+
 <div id="igvBrowser" style="padding-top: 10px;padding-bottom: 10px; border:1px solid lightgray"></div>
 
 
@@ -48,6 +60,8 @@
         			displayMode: "COLLAPSED",
         			height: 50
         		},
+<?php 
+if (isset($data_url) && $data_url != ''){ ?>
         		{
         			type: "alignment",
         			format: "bam",
@@ -55,11 +69,10 @@
         			alignmentRowHeight: 5,
         			height: 150,
         			autoHeight: false,
-        			url: "https://f002.backblazeb2.com/file/aht-varsity/KE_34857_chr20.bam ",
-        			indexURL: "https://f002.backblazeb2.com/file/aht-varsity/KE_34857_chr20.bam.bai",
-        			//url: "/data/Samples/BoT_33834/BoT_33834.bam",
-        			//indexURL: "/data/Samples/BoT_33834/BoT_33834.bai",
+        			url: "<?php echo $data_url; ?>",
+        			indexURL: "<?php echo $index_url; ?>",
         		}, 
+<?php } ?>
         	]
         };
 
