@@ -1,101 +1,150 @@
 <?php
 //Template Name: VarSITy Analysis
 
+if(isset($_POST['runAnalysis'])){
+	//debug_array($_POST);
+
+	/*Array(
+    [inputRef] => cf4
+    [inputGenomicsDB] => cf4-pastoral
+    [caseSamples] => 1403,1744
+    [carrierSamples] => 2399
+    [controlSamples] => 1488,1634,1375,1376,1338,1636,1637,1638,1471,1639,1640,1641,1642,1643,1644,1366,1472,1377,1645,1646,1647,1320,1648,1649,1473,1438,1439,1411,1412,1044,1053,1443,6032,1480,5104,5105,5106,1465,1483,1032,7987,8068,1397,1398,1429,1430,1635,1185,1475,1207,6034,1486,1679,6035,1043,1358,1504
+    [excludeSamples] => 1671,1381,1745
+    [runAnalysis] => 
+	)*/
+
+	$jobID = createVarsityJob($_POST);
+	if($jobID > 0){
+		$msg = '<div class="alert alert-success" role="alert"><strong>SUCCESS</strong> - Your VarSITy job number #'.$jobID.' has been created and will be submitted to the HPC shortly.</div>';
+	} else {
+		$msg = '<div class="alert alert-danger" role="alert"><strong>ERROR</strong> - There was an issue creating your VarSITy job. Please try again or contact Ellen for help.</div>';
+	}
+	//echo $jobID;
+	//exit;
+}
+
 get_header();
+
+$GENOMES = getGenomeData();
+
+$samples = getSampleListByRef('cf4');
+$samplesByGroup = array();
+$dbOptions = array();
+foreach($samples as $row){
+	if(!isset($samplesByGroup[$row->genomicsDB])){ $samplesByGroup[$row->genomicsDB] = array(); }
+	if(!isset($dbOptions[$row->genomicsDB]) && isset($row->genomicsDB) && isset($row->BreedGroup)) { $dbOptions[$row->genomicsDB] = $row->BreedGroup; }
+	array_push($samplesByGroup[$row->genomicsDB], $row);
+}
+ksort($dbOptions);
+//debug_array($GENOMES);exit;
 ?>
 
 <div id="primary" class="content-area">
+	<main id="main" class="site-main container-fluid pt-3" role="main">
+		<?php if(isset($msg)){ ?><div class="row"><div class="col-12"><?php echo $msg; ?></div></div><?php } ?>
+		<form method="post">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="card">
+						<div class="card-header" id="headingTwo" style="padding:0px;">
+							<h5 class="mb-0 mt-0"><a class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Parameters</a></h5>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="form-group col-12">
+									<label for="inputRef">Reference Genome</label>
+									<select id="inputRef" name="inputRef" class="form-control">
+										<option>Choose...</option>
+										<?php foreach ($GENOMES as $ref => $genome){ 
+											if($ref == 'cf4'){
+												echo '<option value="'.$ref.'" selected>'.$genome->Genome.'</option>';
+											} else {
+												echo '<option value="'.$ref.'">'.$genome->Genome.'</option>';
+											}
+										}?>
+									</select>
+									<label for="inputGenomicsDB" class="mt-3">KC Group Database</label>
+									<select id="inputGenomicsDB" name="inputGenomicsDB" class="form-control">
+										<option selected>Choose...</option>
+										<?php foreach ($dbOptions as $value => $text){ 
+											echo '<option value="'.$value.'">'.$text.'</option>';
+										}?>
+									</select>
+									<p class="mt-3">
+								Module to run<br >
+								Inheritance modes
+									</p>
+									</div>
+								</div>
+						</div>
+					</div>
+				</div>
+			
+				<div class="col-md-9">
+					<div class="card-deck">
+						<div class="card border-dark mb-3">
+							<h3 class="card-header mt-0 container">
+								<div class="row align-items-center" style="min-height:40px">
+									<div class="col-4">Cases</div>
+									<div class="col-6"><!--<input class="form-control sampleFilter" id="filterCases" type="text" placeholder="Search.." data-list="caseList">--></div>
+									<div class="col-2"><small class="float-right"><span class="badge badge-secondary" id="caseCount">0</span></small></div>
+								</div>
+							</h3>
+							<ol id="caseList" class="analysisList ml-0 list-group list-group-flush"></ol>		
+						</div>
+						<div class="card border-dark mb-3">
+							<h3 class="card-header mt-0 container">
+								<div class="row align-items-center" style="min-height:40px">
+									<div class="col-4">Carriers</div>
+									<div class="col-6"><!--<input class="form-control sampleFilter" id="filterCases" type="text" placeholder="Search.." data-list="caseList">--></div>
+									<div class="col-2"><small class="float-right"><span class="badge badge-secondary" id="carrierCount">0</span></small></div>
+								</div>
+							</h3>
+							<ol id="carrierList" class="analysisList ml-0 list-group list-group-flush"></ol>		
+						</div>
+					</div>
 
-	<main id="main" class="site-main container-fluid" role="main">
-	
-	<div class="card-deck mt-3">
-		<div class="card border-dark mb-3">
-			<h3 class="card-header mt-0">Cases<small class="float-right"><span class="badge badge-secondary" id="caseCount">1</span></small></h3>
-			<ol id="caseList" class="analysisList ml-0 list-group list-group-flush">
-				<li class="list-group-item" data-id="BoT_33834" data-name="BoT 33834">BoT 33834</li>
-			</ol>		
-		</div>
-		<div class="card border-dark mb-3">
-			<h3 class="card-header mt-0">Controls<small class="float-right"><span class="badge badge-secondary" id="controlCount">52</span></small></h3>
-			<ol id="controlList" class="analysisList ml-0 list-group list-group-flush">
-				<li class="list-group-item" data-id="AS_20361" data-name="AS 20361">AS 20361</li>
-				<li class="list-group-item" data-id="BaH_27933" data-name="BaH 27933">BaH 27933</li>
-				<li class="list-group-item" data-id="BaH_28502" data-name="BaH 28502">BaH 28502</li>
-				<li class="list-group-item" data-id="BE_29160" data-name="BE 29160">BE 29160</li>
-				<li class="list-group-item" data-id="BE_34005" data-name="BE 34005">BE 34005</li>
-				<li class="list-group-item" data-id="BGV_G_27325" data-name="BGV_G 27325">BGV_G 27325</li>
-				<li class="list-group-item" data-id="BoT_28523" data-name="BoT 28523">BoT 28523</li>
-				<li class="list-group-item" data-id="BoT_32595" data-name="BoT 32595">BoT 32595</li>
-				<li class="list-group-item" data-id="BoT_33129" data-name="BoT 33129">BoT 33129</li>
-				<li class="list-group-item" data-id="BoT_33421" data-name="BoT 33421">BoT 33421</li>
-				<li class="list-group-item" data-id="BoT_33725" data-name="BoT 33725">BoT 33725</li>
-				<li class="list-group-item" data-id="CS_35365" data-name="CS 35365">CS 35365</li>
-				<li class="list-group-item" data-id="D_34425" data-name="D 34425">D 34425</li>
-				<li class="list-group-item" data-id="ESS_34006" data-name="ESS 34006">ESS 34006</li>
-				<li class="list-group-item" data-id="FBD_33745" data-name="FBD 33745">FBD 33745</li>
-				<li class="list-group-item" data-id="FCR_34446" data-name="FCR 34446">FCR 34446</li>
-				<li class="list-group-item" data-id="FS_35083" data-name="FS 35083">FS 35083</li>
-				<li class="list-group-item" data-id="GD_19106" data-name="GD 19106">GD 19106</li>
-				<li class="list-group-item" data-id="GS_29455" data-name="GS 29455">GS 29455</li>
-				<li class="list-group-item" data-id="GS_29746" data-name="GS 29746">GS 29746</li>
-				<li class="list-group-item" data-id="GS_29747" data-name="GS 29747">GS 29747</li>
-				<li class="list-group-item" data-id="GS_32059" data-name="GS 32059">GS 32059</li>
-				<li class="list-group-item" data-id="GS_32603" data-name="GS 32603">GS 32603</li>
-				<li class="list-group-item" data-id="GWP_35039" data-name="GWP 35039">GWP 35039</li>
-				<li class="list-group-item" data-id="G_26137" data-name="G 26137">G 26137</li>
-				<li class="list-group-item" data-id="ISP_27785" data-name="ISP 27785">ISP 27785</li>
-				<li class="list-group-item" data-id="ISP_28899" data-name="ISP 28899">ISP 28899</li>
-				<li class="list-group-item" data-id="IS_34583" data-name="IS 34583">IS 34583</li>
-				<li class="list-group-item" data-id="KE_24827" data-name="KE 24827">KE 24827</li>
-				<li class="list-group-item" data-id="KE_34445" data-name="KE 34445">KE 34445</li>
-				<li class="list-group-item" data-id="KE_34857" data-name="KE 34857">KE 34857</li>
-				<li class="list-group-item" data-id="LR_25242" data-name="LR 25242">LR 25242</li>
-				<li class="list-group-item" data-id="LR_29693" data-name="LR 29693">LR 29693</li>
-				<li class="list-group-item" data-id="LR_30639" data-name="LR 30639">LR 30639</li>
-				<li class="list-group-item" data-id="MAL_24992" data-name="MAL 24992">MAL 24992</li>
-				<li class="list-group-item" data-id="MLHD_25106" data-name="MLHD 25106">MLHD 25106</li>
-				<li class="list-group-item" data-id="MWHD_29814" data-name="MWHD 29814">MWHD 29814</li>
-				<li class="list-group-item" data-id="PMD_35478" data-name="PMD 35478">PMD 35478</li>
-				<li class="list-group-item" data-id="RBT_35064" data-name="RBT 35064">RBT 35064</li>
-				<li class="list-group-item" data-id="RC_34633" data-name="RC 34633">RC 34633</li>
-				<li class="list-group-item" data-id="RW_34409" data-name="RW 34409">RW 34409</li>
-				<li class="list-group-item" data-id="SCWT_34784" data-name="SCWT 34784">SCWT 34784</li>
-				<li class="list-group-item" data-id="SCWT_7230" data-name="SCWT 7230">SCWT 7230</li>
-				<li class="list-group-item" data-id="SHP_34234" data-name="SHP 34234">SHP 34234</li>
-				<li class="list-group-item" data-id="SHP_34235" data-name="SHP 34235">SHP 34235</li>
-				<li class="list-group-item" data-id="SS_26491" data-name="SS 26491">SS 26491</li>
-				<li class="list-group-item" data-id="STZ_21669" data-name="STZ 21669">STZ 21669</li>
-				<li class="list-group-item" data-id="V_34007" data-name="V 34007">V 34007</li>
-				<li class="list-group-item" data-id="WHWT_34443" data-name="WHWT 34443">WHWT 34443</li>
-				<li class="list-group-item" data-id="WI_34774" data-name="WI 34774">WI 34774</li>
-				<li class="list-group-item" data-id="WI_34911" data-name="WI 34911">WI 34911</li>
-				<li class="list-group-item" data-id="WSS_34008" data-name="WSS 34008">WSS 34008</li>
-			</ol>
-		</div>
-		<div class="card border-dark mb-3">
-			<h3 class="card-header mt-0">Exclude<small class="float-right"><span class="badge badge-secondary" id="excludeCount">3</span></small></h3>
-			<ol id="excludeList" class="analysisList ml-0 list-group list-group-flush">
-				<li class="list-group-item" data-id="ACS_34278" data-name="ACS 34278">ACS 34278</li>
-				<li class="list-group-item" data-id="BC_30512" data-name="BC 30512">BC 30512</li>
-				<li class="list-group-item" data-id="XB_33712" data-name="XB 33712">XB 33712</li>
-			</ol>
-		</div>
-	</div>
-	
-	<div id="accordion">
-		<div class="card">
-			<div class="card-header" id="headingTwo" style="padding:0px;">
-				<h5 class="mb-0 mt-0"><a class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Parameters</a></h5>
-			</div>
-			<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-				<div class="card-body">
-					...
+					<div class="card-deck">
+						<div class="card border-dark mb-3">
+							<h3 class="card-header mt-0 container">
+								<div class="row align-items-center" style="min-height:40px">
+									<div class="col-4">Controls</div>
+									<div class="col-6">
+										<div class="input-group">
+											<input class="form-control border rounded-pill sampleFilter py-0" id="filterControls" type="search" placeholder="Search.." data-list="controlList">
+										</div>
+									</div>
+									<div class="col-2"><small class="float-right"><span class="badge badge-secondary" id="controlCount">0</span></small></div>
+								</div>
+							</h3>
+							<ol id="controlList" class="analysisList ml-0 list-group list-group-flush">
+								<?php /*foreach ($samplesByGroup['cf4-pastoral'] as $sample){
+									echo '<li class="list-group-item" data-id="'.$sample->CGC.'" data-name="'.$sample->BreedCode.' '.$sample->CGCNumber.'" data-breed="'.$sample->BreedCode.'" data-kcgc="'.$sample->CGCNumber.'" data-genDB="'.$sample->genomicsDB.'">'.$sample->BreedCode.' '.$sample->CGCNumber.'</li>';
+								}*/ ?>
+							</ol>
+						</div>
+						<div class="card border-dark mb-3">
+							<h3 class="card-header mt-0 container">
+								<div class="row align-items-center" style="min-height:40px">
+									<div class="col-4">Exclude</div>
+									<div class="col-6"><!--<input class="form-control sampleFilter" id="filterOmits" type="text" placeholder="Search.." data-list="omitList">--></div>
+									<div class="col-2"><small class="float-right"><span class="badge badge-secondary" id="excludeCount">0</span></small></div>
+								</div>
+							</h3>
+							<ol id="excludeList" class="analysisList ml-0 list-group list-group-flush">
+							</ol>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>	
-	
-	<button class="float-right">Run Analysis!</button>
+			
+			<input type="hidden" name="caseSamples" id="caseSamples" value="" />
+			<input type="hidden" name="carrierSamples" id="carrierSamples" value="" />
+			<input type="hidden" name="controlSamples" id="controlSamples" value="" />
+			<input type="hidden" name="excludeSamples" id="excludeSamples" value="" />
+			<button class="float-right" id="btnRun" name="runAnalysis">Run Analysis!</button>
+		</form>
 
 	</main><!-- #main -->
 
@@ -108,30 +157,87 @@ get_header();
 <?php get_footer(); ?>
 
 <script type="text/javascript">
+	var sampleList = <?php echo json_encode($samplesByGroup); ?>;
 jQuery(function ($) {
-		var list = $("ol.analysisList").sortable({
-			group: 'analysisList',
-			onDrop: function ($item, container, _super) {
+
+	$("#inputGenomicsDB").on("change", function(){
+		var value = $(this).val();
+		$("ol.analysisList").empty();
+
+		$.each(sampleList[value], function(i,item){
+			$('#controlList').append('<li id="sample_'+item.SampleID+'" class="list-group-item" data-id="'+item.CGC+'" data-name="'+item.BreedCode+' '+item.CGCNumber+'" data-breed="'+item.BreedCode+'" data-cgc="'+item.CGC+'" data-sample="'+item.SampleID+'">'+item.BreedCode+' '+item.CGCNumber+'</li>');
+    });
+
+
+		$("#caseCount").text($("#caseList li").length);
+		$("#carrierCount").text($("#carrierList li").length);
+		$("#controlCount").text($("#controlList li").length);
+		$("#excludeCount").text($("#excludeList li").length);
+	});
+
+	$("#btnRun").on("click", function(){
+		
+		var data = list.sortable("serialize").get();
+		var cases = [];
+		var carriers = [];
+		var controls = [];
+		var excludes = [];
+
+		data[0].forEach(function (item) { cases.push(item.sample) });
+		data[1].forEach(function (item) { carriers.push(item.sample) });
+		data[2].forEach(function (item) { controls.push(item.sample) });
+		data[3].forEach(function (item) { excludes.push(item.sample) });
+
+		$("#caseSamples").val(cases.join(","));
+		$("#carrierSamples").val(carriers.join(","));
+		$("#controlSamples").val(controls.join(","));
+		$("#excludeSamples").val(excludes.join(","));
+
+		return true;
+	})
+
+  $(".sampleFilter").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+		//console.log(value);
+		var filterList = $(this).data('list');
+    $("#"+filterList+" *").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+
+	$('input[type=search]').on('search', function () {
+    // search logic here
+    // this function will be executed on click of X (clear button)
+		//console.log('X clicked');
+		$(".list-group-item").show();
+	});
+
+
+
+	var list = $("ol.analysisList").sortable({
+		group: 'analysisList',
+		onDrop: function ($item, container, _super) {
 				
-				$(".analysisList").each(function(){
-						var myList = $(this);
-						var listItems = myList.children('li').get();
-						listItems.sort(function(a, b) {
-								return $(a).data('id').toUpperCase().localeCompare($(b).data('id').toUpperCase());
-						});
-						myList.empty().append(listItems);
+			$(".analysisList").each(function(){
+				var myList = $(this);
+				var listItems = myList.children('li').get();
+				listItems.sort(function(a, b) {
+					return $(a).data('id').toUpperCase().localeCompare($(b).data('id').toUpperCase());
 				});
+				myList.empty().append(listItems);
+			});
 				
-				$("#caseCount").text($("#caseList li").length);
-				$("#controlCount").text($("#controlList li").length);
-				$("#excludeCount").text($("#excludeList li").length);
+			$("#caseCount").text($("#caseList li").length);
+			$("#carrierCount").text($("#carrierList li").length);
+			$("#controlCount").text($("#controlList li").length);
+			$("#excludeCount").text($("#excludeList li").length);
 				
-				var data = list.sortable("serialize").get();
-				var jsonString = JSON.stringify(data, null, ' ');
-				//console.log(jsonString);
+			var data = list.sortable("serialize").get();
+			var jsonString = JSON.stringify(data, null, ' ');
+			console.log(data);
 				
-				_super($item, container);
-			}	
-		});
+			_super($item, container);
+		}	
+	});
 });
 </script>

@@ -2,6 +2,10 @@
 
 require 'child-overides.php';
 
+require_once ('secret.php');
+require 'general.php';
+require_once 'ajax.php';
+
 /**
  * Child theme version.
  *
@@ -399,12 +403,5 @@ function varsity_color_schemes( $color_schemes ) {
 
 }
 add_filter( 'primer_color_schemes', 'varsity_color_schemes' );
-
-
-function debug_array($array){
-    echo '<pre>';
-    print_r($array);
-    echo '</pre>';
-}
 
 ?>

@@ -1,7 +1,7 @@
 <?php
 
 add_action( 'init', 'register_custom_posttypes' );
-add_action( 'admin_menu', 'set_admin_menu_separator' );
+//add_action( 'admin_menu', 'set_admin_menu_separator' );
 add_action( 'admin_head', 'fontawesome_icon_dashboard' );
 
 // Our custom post type function
@@ -48,15 +48,15 @@ function register_custom_posttypes() {
 
 }
 
-
 function set_admin_menu_separator() { do_action( 'admin_init', 29 ); }
 
 function fontawesome_icon_dashboard() {
 	echo "<style type='text/css' media='screen'>
 			#adminmenu #menu-posts-sample div.wp-menu-image:before {
 				font-family: Fontawesome !important;
-				content: '\\f0c3';
-			}";
+				content: \"\\f0c3\";
+			}
+			</style>'";
 }
 
 ?>

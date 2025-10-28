@@ -1,14 +1,18 @@
 <?php
 //Template Name: VarSITy Sample List
 
-$breedGroups = get_terms(array(
+
+$GENOMES = getGenomeData();
+$samples = getAllSamples();
+
+/*$breedGroups = get_terms(array(
     'taxonomy'     => 'dog-breeds',
     'parent'        => 0,
     'number'        => 20,
     'hide_empty'    => false           
-));
+));*/
 
-function get_samples_for_group($breed_group){
+/*function get_samples_for_group($breed_group){
 	$samples = get_posts(array(
 		'post_status'   => 'publish',
 		'post_type'      => 'sample',
@@ -20,34 +24,60 @@ function get_samples_for_group($breed_group){
 		)
 	));
 	return $samples;
-}
+}*/
 
-$all_samples = get_posts(array(
+/*$all_samples = get_posts(array(
 		'post_status'   => 'publish',
 		'post_type'      => 'sample',
 		'posts_per_page' => -1,
 		'order'          => 'ASC',
 		'orderby'	=> 'post_title',
-	));
+	));*/
+
+$samples_by_group = array();
 
 $tab_content = '<div class="tab-content" id="groupTabs">
   <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="home-tab">
   <table class="table table-sm mt-4 sampleListTable" id="allTable" style="width:100%">
-  <thead><tr><th>Sample</th><th>Breed</th><th>Phenotype</th><th>SNP Count</th><th>Indel Count</th></tr></thead><tbody>';
+  <thead><tr><th>Sample</th><th>Breed</th><th>BioSample</th><th>Group</th>';
+	foreach ($GENOMES as $ref => $genome_details){
+		$classes = 'text-center';
+		if($genome_details->isPrimary == 0){ $classes .= ' hidden-xs hidden-sm'; }
+		$tab_content .= '<th class="'.$classes.'" style="padding-right:0.3rem;">'.strtoupper($ref).'</th>';
+	}
+	$tab_content .= '</tr></thead><tbody>';
 
-foreach ($all_samples as $s){
-	$term_list = wp_get_post_terms($s->ID, 'dog-breeds', array("fields" => "names"));
-	$breed = $term_list[0];
-	//print_r($s);
-	$phenotype = get_post_meta($s->ID, 'phenotype', true);
-	$snp_count = (get_post_meta($s->ID, 'snp_count', true)) ? get_post_meta($s->ID, 'snp_count', true) : 0;
-	$indel_count = (get_post_meta($s->ID, 'indel_count', true)) ? get_post_meta($s->ID, 'indel_count', true) : 0;
-	$total_vars = $snp_count + $indel_count;
-	$snp_count = ($snp_count > 0) ? number_format($snp_count) : '&nbsp';
-	$indel_count = ($indel_count > 0) ? number_format($indel_count) : '&nbsp';
+foreach ($samples as $s){
+  $wgs = getWgsDetails($s->SampleID, $s->CGCNumber);
+	$bam_links = array();
+  foreach ($wgs['analysis'] as $analysis){
+		if (isset($analysis->enaBam) || $analysis->rdsBam){ 
+      //$bam_links[$analysis->refGenome]= (isset($analysis->enaBam)) ? '<a href="javascript:copyToClipboard(\'https://'.$analysis->enaBam.'\')">ENA <i class="fa-regular fa-copy"></i></a>' : '<i class="fa-solid fa-check text-greenLight">'; 
+			$bam_links[$analysis->refGenome] = '<i class="fa-solid fa-check text-greenLight">';
+		}
+	}
+	$s->bamLinks = $bam_links;
 	$tab_content .= '
-	<tr><td><a href="'.get_permalink($s->ID).'">'.$s->post_title.'</a></td><td>'.$breed.'</td><td>'.$phenotype.'</td><td>'.$snp_count.'</td><td>'.$indel_count.'</td></tr>';
+	<tr><td><a href="/sample/'.$s->CGC.'">'.str_replace("_", " ", $s->CGC).'</a></td>
+	<td>'.$s->Breed.'</td><td><a href="https://www.ebi.ac.uk/ena/browser/view/'.$s->BioSample.'" target="_blank">'.$s->BioSample.'</a></td>
+	<td>'.$s->BreedGroup.'</td>';
+	foreach ($GENOMES as $ref => $genome_details){
+		$classes = 'text-center';
+		if($genome_details->isPrimary == 0){ $classes .= ' hidden-xs hidden-sm'; }
+		if(isset($bam_links[$ref])){
+			$tab_content .= '<td class="'.$classes.'" nowrap>'.$bam_links[$ref].'<span style="display:none">'.$ref.'</span></td>';
+    } else {
+			$tab_content .= '<td class="'.$classes.'" nowrap></td>';
+		}
+	} 
+	$tab_content .= '</tr>';
+	if(isset($s->BreedGroup)){
+		if(!isset($samples_by_group[$s->BreedGroup])){ $samples_by_group[$s->BreedGroup] = array(); }
+		array_push($samples_by_group[$s->BreedGroup], $s);
+	}
+	
 }
+ksort($samples_by_group);
   
 $tab_content .= '
   </tbody></table>
@@ -63,11 +93,11 @@ get_header();
 	<ul class="nav nav-tabs mt-3 mb-4">
 		<li class="nav-item"><a class="nav-link active" href="#all" data-toggle="tab" id="all-tab">All</a></li>	
 		<?php 
-		foreach ($breedGroups as $group){
-			//echo $group->name;
-			$samples = get_samples_for_group($group->slug); 
-			echo ' <li class="nav-item"><a class="nav-link" href="#'.$group->slug.'" data-toggle="tab" id="'.$group->slug.'-tab">'.$group->name.'&nbsp;<span class="badge badge-secondary">'.count($samples).'</span></a></li>';
-			$tab_content .= '<div class="tab-pane fade" id="'.$group->slug.'" role="tabpanel" aria-labelledby="'.$group->slug.'-tab">...</div>';
+		foreach ($samples_by_group as $group => $samples){
+			//echo $group;
+			//$samples = get_samples_for_group($group->slug); 
+			echo ' <li class="nav-item"><a class="nav-link" href="#'.$group.'" data-toggle="tab" id="'.$group.'-tab">'.$group.'&nbsp;<span class="badge badge-secondary">'.count($samples).'</span></a></li>';
+			$tab_content .= '<div class="tab-pane fade" id="'.$group.'" role="tabpanel" aria-labelledby="'.$group.'-tab">...</div>';
 		}
 		$tab_content .= '</div>';
 		?>
