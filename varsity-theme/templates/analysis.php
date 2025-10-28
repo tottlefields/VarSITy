@@ -112,7 +112,7 @@ ksort($dbOptions);
 									<div class="col-4">Controls</div>
 									<div class="col-6">
 										<div class="input-group">
-											<input class="form-control border rounded-pill sampleFilter py-0" id="filterControls" type="search" placeholder="Search.." data-list="controlList">
+											<input class="form-control border rounded-pill sampleFilter py-0" id="filterControls" type="search" placeholder="Search.." autocomplete="off" data-list="controlList">
 										</div>
 									</div>
 									<div class="col-2"><small class="float-right"><span class="badge badge-secondary" id="controlCount">0</span></small></div>
